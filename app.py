@@ -1,8 +1,9 @@
 import os
 import sqlite3
-from flask import Flask, render_template, request, redirect, url_for
+from flask import Flask, render_template, request, redirect, url_for, flash
 
 app = Flask(__name__)
+app.secret_key = "your_secret_key"  # Required for flashing messages
 
 # Database file stored in the same directory as app.py
 DB_PATH = os.path.join(os.path.dirname(__file__), "database.db")
@@ -35,6 +36,14 @@ def init_db():
         family_id INTEGER NOT NULL,
         interest TEXT NOT NULL,
         FOREIGN KEY (family_id) REFERENCES family_details(family_id) ON DELETE CASCADE
+    );
+
+    CREATE TABLE IF NOT EXISTS logins ( 
+        login_id INTEGER PRIMARY KEY AUTOINCREMENT, 
+        user_id INTEGER NOT NULL, 
+        email TEXT UNIQUE NOT NULL, 
+        password TEXT NOT NULL,
+        FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE
     );
     ''')
 
@@ -72,6 +81,12 @@ def add_user(name, email, password, phone, city, details, num_children, interest
             VALUES (?, ?)
         ''', (family_id, interest.strip()))
 
+    # Store login details
+    cursor.execute('''
+        INSERT INTO logins (user_id, email, password) 
+        VALUES (?, ?, ?)
+    ''', (user_id, email, password))
+
     conn.commit()
     conn.close()
 
@@ -81,8 +96,24 @@ def home():
     return render_template('index.html')
 
 # Login route
-@app.route('/login')
+@app.route('/login', methods=['GET', 'POST'])
 def login():
+    if request.method == 'POST':
+        email = request.form['email']
+        password = request.form['password']
+
+        conn = sqlite3.connect(DB_PATH)
+        cursor = conn.cursor()
+        cursor.execute("SELECT * FROM logins WHERE email = ? AND password = ?", (email, password))
+        user = cursor.fetchone()
+        conn.close()
+
+        if user:
+            flash("Login successful!", "success")
+            return redirect(url_for('home'))
+        else:
+            flash("Invalid email or password!", "error")
+
     return render_template('login.html')
 
 # Registration route
@@ -101,9 +132,15 @@ def register():
         # Add user to database
         add_user(name, email, password, phone, city, details, num_children, interests)
 
-        return redirect(url_for('home'))  # Redirect to home page after successful registration
+        flash("Registration successful!", "success")
+        return redirect(url_for('home'))
 
-    return render_template('JoinFamReg.html')  # Show registration form
+    return render_template('JoinFamReg.html')
+
+# Forgot Password Route
+@app.route('/forgot-password')
+def forgot_password():
+    return "Forgot Password Page Coming Soon!"
 
 if __name__ == '__main__':
-    app.run(debug=True)  # Runs the Flask application
+    app.run(debug=True)

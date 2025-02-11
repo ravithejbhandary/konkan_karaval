@@ -1,75 +1,181 @@
 /* General Styles */
 body {
     font-family: 'Poppins', sans-serif;
-    background-color: #faf3e0; /* Soft pastel background */
+    background-color: #fdf7eb;
     margin: 0;
     padding: 0;
+    padding-top: 50px; /* Creates space at the top */
     display: flex;
     justify-content: center;
     align-items: center;
-    min-height: 100vh;
+    height: 100vh;
 }
 
-/* Registration Form Container */
-.form-container {
-    max-width: 550px;
+.text-box {
+    display: block !important; /* Ensure it's not hidden */
+    visibility: visible !important;
+}
+
+.container {
     width: 100%;
-    background: #fff;
-    padding: 30px;
-    border-radius: 12px;
-    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.15);
+    max-width: 600px; /* Adjust width */
+    margin: auto;
 }
 
-/* Headings */
-h2 {
-    color: #ff9d4d;
-    font-size: 35px;
-    font-weight: bold;
+/* Sidebar */
+.sidebar {
+    width: 250px;
+    position: fixed;
+    left: 0;
+    top: 0;
+    height: 100%;
+    background: #f4a261;
+}
+
+/* Container */
+.page-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 100vh;
+}
+
+/* Common Form Styling */
+.form-container, .login-container {
+    background: white;
+    padding: 40px;
+    border-radius: 10px;
+    box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.1);
+    max-width: 500px;
+    width: 100%;
     text-align: center;
-    margin-bottom: 20px;
 }
 
-/* Form Labels - Left Aligned */
-.form-label {
-    font-weight: 500;
-    color: #333;
-    font-size: 14px;
+/* Title */
+.form-container h2, .login-container h2 {
+    color: #ff9d4d;
+    font-size: 30px;
+    font-weight: bold;
+    margin-bottom: 25px;
+}
+
+/* Form Fields */
+form {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
     text-align: left;
-    display: block; /* Ensures labels appear above inputs */
-    margin-bottom: 5px;
 }
 
-/* Mandatory Asterisk */
-.mandatory {
-    color: red;
+label {
+    font-size: 14px;
+    font-weight: bold;
+    color: #333;
 }
 
-/* Input Fields & Select */
-.form-control, .form-select {
+/* Input Fields */
+input, select, textarea {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #ccc;
     border-radius: 6px;
     font-size: 14px;
     background: #f9f9f9;
-    border: 1px solid #ccc;
+    box-sizing: border-box;
+    outline: none;
 }
 
-/* Button Styling */
-.btn {
+input:focus, select:focus, textarea:focus {
+    border-color: #ff9d4d;
+    box-shadow: 0px 0px 5px rgba(255, 157, 77, 0.5);
+}
+
+/* Button */
+button {
     background-color: #ff9d4d;
     color: white;
+    padding: 12px;
+    border: none;
+    cursor: pointer;
+    width: 100%;
     border-radius: 6px;
     font-size: 16px;
-    padding: 12px;
+    font-weight: bold;
     transition: background 0.3s ease-in-out;
 }
 
-.btn:hover {
+button:hover {
     background-color: #ff7633;
+}
+
+/* Flash Messages */
+.flash-messages {
+    text-align: center;
+    margin-bottom: 15px;
+}
+
+.flash-message {
+    padding: 12px;
+    border-radius: 5px;
+    font-weight: bold;
+    display: block;
+    width: 100%;
+    text-align: center;
+}
+
+/* Error Message */
+.flash-messages .error {
+    background: #ff4d4d;
+    color: white;
+    border: 1px solid #e60000;
+}
+
+/* Success Message */
+.flash-messages .success {
+    background: #4CAF50;
+    color: white;
+    border: 1px solid #388E3C;
+}
+
+/* Extra Links */
+.extra-links {
+    margin-top: 15px;
+    text-align: center;
+}
+
+.extra-links p {
+    font-size: 14px;
+}
+
+.extra-links a {
+    color: #ff7633;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+.extra-links a:hover {
+    text-decoration: underline;
+}
+
+/* Forgot Password */
+.forgot-password a {
+    color: #5a2ca0;
+    text-decoration: none;
+    font-weight: bold;
+    display: block;
+    text-align: center;
+    margin-top: 10px;
+}
+
+.forgot-password a:hover {
+    text-decoration: underline;
 }
 
 /* Responsive Design */
 @media (max-width: 600px) {
     .form-container {
         width: 90%;
-        padding: 20px;
+        padding: 25px;
     }
 }
