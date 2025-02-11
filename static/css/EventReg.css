@@ -1,0 +1,148 @@
+/* Reset Body Styling */
+body {
+    font-family: 'Poppins', sans-serif;
+    background-color: #f7f7f7; /* Soft background color */
+    color: #333;
+    text-align: center;
+    padding: 60px 20px;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 0;
+    position: relative; /* Added to allow positioning the back button */
+}
+
+.container {
+    max-width: 500px;
+    width: 100%;
+    background-color: white;
+    padding: 40px;
+    border-radius: 12px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    text-align: left;
+    box-sizing: border-box;
+}
+
+h2 {
+    font-size: 28px;
+    margin-bottom: 25px;
+    color: #ff9d4d; /* Deep red */
+    font-weight: 600;
+}
+
+label {
+    font-size: 16px;
+    margin-bottom: 8px;
+    color: #333;
+}
+
+input {
+    padding: 12px;
+    border: 2px solid #ff9d4d; /* Deep red border */
+    border-radius: 8px;
+    margin-bottom: 15px;
+    font-size: 16px;
+    outline: none;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+input:focus {
+    border-color: #ff6347; /* Lighter red when focused */
+}
+
+button {
+    background-color: #ff9d4d; /* Deep red background */
+    color: white;
+    padding: 14px 20px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    font-size: 16px;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+button:hover {
+    background-color: #ff7633; /* Darker red on hover */
+}
+
+button:active {
+    background-color: #ff6347; /* Light red on click */
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .container {
+        padding: 30px;
+    }
+}
+
+/* Back button styling */
+#backButton {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    background-color: #ff9d4d;
+    color: white;
+    padding: 10px 15px;
+    border-radius: 8px;
+    text-decoration: none;
+    font-size: 16px;
+    font-weight: bold;
+    transition: background-color 0.3s ease;
+}
+
+#backButton:hover {
+    background-color: #ff7633; /* Darker red when hovered */
+}
+
+#backButton:active {
+    background-color: #ff6347; /* Lighter red on click */
+}
+
+/* Thank You message styling */
+#thankYouMessage {
+    padding: 20px;
+    background-color: #f4f4f4;
+    border-radius: 10px;
+    margin-top: 20px;
+    animation: fadeIn 2s ease-in-out;
+    display: none;
+    position: relative; /* Make sure the thank you message stays above the overlay */
+    z-index: 1000; /* Ensure it's on top of the overlay */
+}
+
+#thankYouMessage h2 {
+    color: #ff7633;
+}
+
+#thankYouMessage p {
+    font-size: 18px;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+/* Overlay styling for background blur */
+#overlay {
+    display: none;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 999;
+    backdrop-filter: blur(8px); /* Apply blur effect */
+}
