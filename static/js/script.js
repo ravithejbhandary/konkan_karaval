@@ -65,7 +65,7 @@ document.addEventListener("DOMContentLoaded", function() {
     // Handle Login Form Submission
     document.getElementById("loginForm")?.addEventListener("submit", function (event) {
         event.preventDefault();
-        alert("Login Successful!");
+        // alert("Login Successful!");
         window.location.href = "dashboard.html"; // Redirect to Dashboard
     });
 

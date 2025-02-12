@@ -1,6 +1,7 @@
 import os
 import sqlite3
 from flask import Flask, render_template, request, redirect, url_for, flash
+from werkzeug.security import generate_password_hash, check_password_hash
 
 app = Flask(__name__)
 app.secret_key = "your_secret_key"  # Required for flashing messages
@@ -57,12 +58,24 @@ init_db()
 def add_user(name, email, password, phone, city, details, num_children, interests):
     conn = sqlite3.connect(DB_PATH)
     cursor = conn.cursor()
+
+    # Check if user already exists
+    cursor.execute("SELECT user_id FROM users WHERE email = ?", (email,))
+    existing_user = cursor.fetchone()
+    
+    if existing_user:
+        flash("User already exists. Please log in.", "error")
+        conn.close()
+        return False  # Prevent duplicate registration
+    
+    # Hash the password before storing it
+    hashed_password = generate_password_hash(password)
     
     # Insert user details
     cursor.execute('''
         INSERT INTO users (name, email, password, phone) 
         VALUES (?, ?, ?, ?)
-    ''', (name, email, password, phone))
+    ''', (name, email, hashed_password, phone))
     
     user_id = cursor.lastrowid  # Get the user ID of the newly inserted user
 
@@ -85,10 +98,13 @@ def add_user(name, email, password, phone, city, details, num_children, interest
     cursor.execute('''
         INSERT INTO logins (user_id, email, password) 
         VALUES (?, ?, ?)
-    ''', (user_id, email, password))
+    ''', (user_id, email, hashed_password))
 
     conn.commit()
     conn.close()
+
+    return True  # Registration successful
+
 
 # Home route
 @app.route('/')
@@ -101,21 +117,34 @@ def login():
     if request.method == 'POST':
         email = request.form['email']
         password = request.form['password']
-
+        
         conn = sqlite3.connect(DB_PATH)
         cursor = conn.cursor()
-        cursor.execute("SELECT * FROM logins WHERE email = ? AND password = ?", (email, password))
+
+        # Fetch user from users table
+        cursor.execute("SELECT password FROM users WHERE email = ?", (email,))
         user = cursor.fetchone()
+
         conn.close()
 
         if user:
-            flash("Login successful!", "success")
-            return redirect(url_for('home'))
+            hashed_password = user[0]  # Extract hashed password
+            
+            # Check if the hashed password matches
+            if check_password_hash(hashed_password, password):
+                flash("Login successful!", "success")
+                return redirect(url_for('home'))
+            else:
+                flash("Incorrect password. Please try again.", "error")
         else:
-            flash("Invalid email or password!", "error")
+            flash("User email does not exist. Please register first.", "error")
 
-    return render_template('login.html')
+    return render_template('login.html')  # Stay on the same page if login fails
 
+
+
+
+# Registration route
 # Registration route
 @app.route('/register', methods=['GET', 'POST'])
 def register():
@@ -129,13 +158,29 @@ def register():
         num_children = request.form.get('children_count', 0)
         interests = request.form.get('interests', '')
 
-        # Add user to database
-        add_user(name, email, password, phone, city, details, num_children, interests)
+        # Check if the user already exists before calling add_user
+        conn = sqlite3.connect(DB_PATH)
+        cursor = conn.cursor()
+        cursor.execute("SELECT user_id FROM users WHERE email = ?", (email,))
+        existing_user = cursor.fetchone()
+        conn.close()
 
-        flash("Registration successful!", "success")
-        return redirect(url_for('home'))
+        if existing_user:
+            flash("User already exists. Please log in.", "error")
+            return redirect(url_for('login'))  # Redirect to login instead of showing duplicate messages
+
+        # Add user to database
+        success = add_user(name, email, password, phone, city, details, num_children, interests)
+
+        if success:
+            flash("Registration successful! Please log in.", "success")
+            return redirect(url_for('login'))  # Redirect to login after successful registration
+
+        flash("Registration failed. Try again.", "error")
 
     return render_template('JoinFamReg.html')
+
+
 
 # Forgot Password Route
 @app.route('/forgot-password')
